@@ -1,1 +1,1769 @@
-placeholder
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FBTI 足球员人格测试 - Footballer Personality Type Indicator</title>
+  <style>
+    :root {
+      --bg: #f6faf6;
+      --panel: #ffffff;
+      --text: #1e2a22;
+      --muted: #6a786f;
+      --line: #dbe8dd;
+      --soft: #edf6ef;
+      --accent: #2d5a3d;
+      --accent-strong: #1a472a;
+      --accent-light: #4a8c5f;
+      --shadow: 0 16px 40px rgba(47, 73, 55, 0.08);
+      --shadow-lg: 0 25px 50px rgba(26, 71, 42, 0.15);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at top left, #f8fff8 0, #f6faf6 36%, #f2f7f3 100%);
+      color: var(--text);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      animation: fadeInUp 0.6s ease;
+    }
+
+    .hero {
+      padding: 42px 32px;
+      margin-top: 20px;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fdf8 50%, #ffffff 100%);
+    }
+
+    .hero::before {
+      content: "⚽";
+      position: absolute;
+      right: 40px;
+      top: 30px;
+      font-size: 120px;
+      opacity: 0.08;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -80px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45, 90, 61, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--accent-strong);
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--soft), #ffffff);
+      border-radius: 999px;
+      padding: 8px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(45, 90, 61, 0.1);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 680px;
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 800;
+    }
+    .hero .sub {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 720px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 28px;
+    }
+
+    .mini-panel {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, #fbfefb, #f3f8f4);
+      box-shadow: 0 4px 12px rgba(45, 90, 61, 0.08);
+    }
+
+    .mini-panel h3 {
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: var(--accent-strong);
+    }
+
+    .mini-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 2;
+      font-size: 14px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .hero-minimal {
+      min-height: 50vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .hero-minimal::after { display: none; }
+    .hero-minimal h1 {
+      max-width: none;
+      margin: 0;
+    }
+    .hero-actions-single {
+      justify-content: center;
+      margin-top: 32px;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      transition: all .2s ease;
+      font: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    button:disabled { cursor: not-allowed; opacity: 0.5; transform: none; }
+    button:disabled::before { display: none; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent) 100%);
+      color: #fff;
+      padding: 16px 28px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(26, 71, 42, 0.25);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 12px 32px rgba(26, 71, 42, 0.35);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--accent-strong);
+      padding: 16px 28px;
+      border-radius: 16px;
+      border: 2px solid var(--line);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, #ffffff, #f8fdf8);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .test-wrap,
+    .result-wrap {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .progress {
+      flex: 1;
+      min-width: 240px;
+      height: 12px;
+      background: #edf3ee;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #5ba56a, #2d5a3d, #5ba56a);
+      background-size: 200% 100%;
+      border-radius: inherit;
+      transition: width .3s ease;
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .progress-text {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    .question-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .question {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff, #fbfdfb);
+      transition: all .2s ease;
+    }
+
+    .question:hover {
+      box-shadow: 0 4px 16px rgba(45, 90, 61, 0.08);
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--soft), #ffffff);
+      border: 1px solid var(--line);
+      font-weight: 600;
+    }
+
+    .question-title {
+      font-size: 17px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 2px solid var(--line);
+      background: #fff;
+      transition: all .2s ease;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      border-color: var(--accent-light);
+      background: linear-gradient(135deg, #ffffff, #f8fcf9);
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(45, 90, 61, 0.08);
+    }
+
+    .option input {
+      margin-top: 3px;
+      accent-color: var(--accent-strong);
+      transform: scale(1.15);
+      flex-shrink: 0;
+    }
+
+    .option-code {
+      font-weight: 800;
+      color: var(--accent-strong);
+      min-width: 24px;
+      font-size: 15px;
+    }
+
+    .actions-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      padding-top: 6px;
+    }
+
+    .hint { color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+    .result-layout { display: grid; gap: 18px; }
+    .result-top {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .poster-box, .type-box, .analysis-box, .dim-box, .note-box {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff, #fbfdfb);
+      box-shadow: 0 2px 12px rgba(45, 90, 61, 0.06);
+    }
+
+    .poster-box {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      min-height: 300px;
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(circle at top right, rgba(45,90,61,0.12), rgba(45,90,61,0) 50%),
+        linear-gradient(135deg, #ffffff, #f7fbf8);
+    }
+
+    .poster-box::before {
+      content: "⚽";
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 60px;
+      opacity: 0.06;
+    }
+
+    .poster-box::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      bottom: -60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,90,61,0.08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .poster-image {
+      width: 100%;
+      min-height: 240px;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .poster-box.no-image .poster-image { display: none; }
+    .poster-caption {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+
+    .type-kicker {
+      font-size: 12px;
+      color: var(--accent-strong);
+      margin-bottom: 10px;
+      letter-spacing: .08em;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .type-name {
+      font-size: clamp(32px, 6vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .type-subname {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .match {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, var(--soft), #ffffff);
+      border: 1px solid var(--line);
+      color: var(--accent-strong);
+      font-weight: 800;
+      font-size: 15px;
+      line-height: 1.4;
+      box-shadow: 0 2px 8px rgba(45, 90, 61, 0.1);
+    }
+    .analysis-box h3, .dim-box h3, .note-box h3 { font-size: 16px; margin-bottom: 12px; }
+    .result-actions { margin-top: 22px; display: flex; justify-content: flex-end; }
+    .analysis-box p { margin: 0; color: #304034; font-size: 15px; line-height: 1.9; white-space: pre-wrap; }
+    .dim-list { display: grid; gap: 14px; }
+
+    .dim-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, #ffffff, #f8fcf9);
+      transition: all .2s ease;
+    }
+
+    .dim-item:hover {
+      box-shadow: 0 2px 8px rgba(45, 90, 61, 0.08);
+      transform: translateX(2px);
+    }
+
+    .dim-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dim-item-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .dim-item-score {
+      color: var(--accent-strong);
+      font-weight: 800;
+      font-size: 15px;
+      white-space: nowrap;
+      background: linear-gradient(135deg, var(--soft), #ffffff);
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+
+    .dim-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .note-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .author-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #ffffff, #fbfdfb);
+      overflow: hidden;
+    }
+    .author-box summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .author-box summary::-webkit-details-marker { display: none; }
+    .author-box summary::after {
+      content: '展开';
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-strong);
+      border: 1px solid var(--line);
+      background: var(--soft);
+      padding: 6px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+    .author-box[open] summary::after { content: '收起'; }
+    .author-content {
+      border-top: 1px solid var(--line);
+      padding: 0 18px 18px;
+    }
+    .author-content p { margin: 14px 0 0; color: #304034; font-size: 14px; line-height: 1.9; }
+
+    .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid,
+      .result-top { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .shell { padding: 16px 12px 48px; }
+      .hero, .test-wrap, .result-wrap { padding: 18px; }
+      .hero h1 { font-size: 32px; }
+      .question-title { font-size: 16px; }
+      .dim-grid, .score-grid { grid-template-columns: 1fr; }
+      .option { padding: 14px; }
+      .btn-primary, .btn-secondary { padding: 14px 20px; }
+    }
+
+    /* 装饰性足球元素 */
+    body::after {
+      content: "⚽";
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 40px;
+      opacity: 0.15;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 题目卡片逐个显示动画 */
+    .question {
+      animation: fadeInUp 0.5s ease backwards;
+    }
+
+    .question:nth-child(1) { animation-delay: 0.05s; }
+    .question:nth-child(2) { animation-delay: 0.1s; }
+    .question:nth-child(3) { animation-delay: 0.15s; }
+    .question:nth-child(4) { animation-delay: 0.2s; }
+    .question:nth-child(5) { animation-delay: 0.25s; }
+
+    /* 选中状态样式 */
+    .option:has(input:checked) {
+      border-color: var(--accent-strong);
+      background: linear-gradient(135deg, #f0f8f2, #ffffff);
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+    }
+
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-strong);
+    }
+
+    /* 人格列表页面样式 */
+    .all-types-wrap {
+      margin-top: 22px;
+      padding: 32px;
+    }
+
+    .all-types-header {
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .all-types-header h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent-strong) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .all-types-header p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .all-types-header button {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .all-types-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .type-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff, #fbfdfb);
+      transition: all .2s ease;
+      cursor: pointer;
+    }
+
+    .type-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(45, 90, 61, 0.12);
+      border-color: var(--accent-light);
+    }
+
+    .type-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .type-card-code {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--accent-strong);
+      line-height: 1;
+    }
+
+    .type-card-cn {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .type-card-intro {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .type-card-desc {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .type-card.special {
+      border-color: var(--accent-strong);
+      background: linear-gradient(135deg, #f8fff8, #f0f8f2);
+    }
+
+    .type-card.special .type-card-code {
+      color: #d4a017;
+    }
+
+    @media (max-width: 600px) {
+      .all-types-header button {
+        position: static;
+        transform: none;
+        margin-bottom: 16px;
+      }
+      .all-types-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section id="intro" class="screen active">
+      <div class="hero card hero-minimal">
+        <div class="eyebrow">⚽ 足球场上的灵魂拷问</div>
+        <h1>MBTI已经过时，<br>FBTI来了。</h1>
+        <div class="hero-actions hero-actions-single">
+          <button id="startBtn" class="btn-primary">⚽ 开始测试</button>
+        </div>
+        <div style="padding-top: 2rem; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+          <span style="color: var(--muted);">🎯 致敬 SBTI 人格测试</span>
+          <span style="color: var(--muted);">🤪 题目要荒谬 · 过程要抽象 · 结果要扎心</span>
+          <span style="font-weight: 700; color: var(--accent-strong);">FBTI - Footballer Personality Type Indicator</span>
+          <span style="color: var(--muted);">31 题 · 15 维度 · 27 种人格</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="test" class="screen">
+      <div class="test-wrap card">
+        <div class="topbar">
+          <div class="progress"><span id="progressBar"></span></div>
+          <div class="progress-text" id="progressText">0 / 31</div>
+        </div>
+
+        <div id="questionList" class="question-list"></div>
+
+        <div class="actions-bottom">
+          <div class="hint" id="testHint">全选完才会放行。世界已经够乱了，起码把题做完整。⚽</div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button id="backIntroBtn" class="btn-secondary">返回首页</button>
+            <button id="submitBtn" class="btn-primary" disabled>⚽ 提交并查看结果</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="result-wrap card">
+        <div class="result-layout">
+          <div class="result-top">
+            <div class="poster-box" id="posterBox">
+              <div class="poster-caption" id="posterCaption">怎么样，被我看穿了吧？⚽</div>
+            </div>
+
+            <div class="type-box">
+              <div class="type-kicker" id="resultModeKicker">⚽ 你的主类型</div>
+              <div class="type-name" id="resultTypeName">WALK（散步前锋）</div>
+              <div class="match" id="matchBadge">⚽ 匹配度 92%</div>
+              <div class="type-subname" id="resultTypeSub">系统备注会显示在这里。</div>
+            </div>
+          </div>
+
+          <div class="analysis-box">
+            <h3>📊 该人格的简单解读</h3>
+            <p id="resultDesc"></p>
+          </div>
+
+          <div class="dim-box">
+            <h3>🎯 十五维度评分</h3>
+            <div id="dimList" class="dim-list"></div>
+          </div>
+
+          <div class="note-box">
+            <h3>⚽ 友情提示</h3>
+            <p id="funNote">本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招魂、算命或人生判决书。足球场上什么都会发生，就像人生一样。⚽</p>
+          </div>
+
+          <details class="author-box">
+            <summary>📝 作者的话</summary>
+            <div class="author-content">
+              <p>本测试致敬 SBTI 人格测试，原作者是 B 站 @蛆肉儿串儿。</p>
+              <p>FBTI 足球员人格测试纯属二创，把 SBTI 的框架搬到了足球场上。</p>
+              <p>所有的足球运动员人格都是基于对球场上各种奇葩行为的观察和想象创造出来的。如果你觉得被冒犯了，对不起！那是因为我说中你了。⚽</p>
+              <p>题目要荒谬、过程要抽象、结果要扎心——这就是我们的宗旨。总之好玩为主，还请不要用于盈利呀。</p>
+              <p>无论你是球星还是球盲，是前锋还是门将，这里总有一个属于你的足球灵魂。准备好了吗？⚽</p>
+            </div>
+          </details>
+        </div>
+
+        <div class="result-actions">
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content: space-between; width: 100%;">
+            <button id="viewAllTypesBtn" class="btn-secondary">📖 查看所有人格</button>
+            <div style="display:flex; gap:12px;">
+              <button id="restartBtn" class="btn-secondary">🔄 重新测试</button>
+              <button id="toTopBtn" class="btn-primary">⚽ 回到首页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="allTypes" class="screen">
+      <div class="all-types-wrap card">
+        <div class="all-types-header">
+          <h2>📖 FBTI 全人格图鉴</h2>
+          <p>27 种足球员人格，总有一个是你</p>
+          <button id="backToResultBtn" class="btn-secondary">← 返回结果</button>
+        </div>
+        <div id="allTypesList" class="all-types-list"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const dimensionMeta = {
+      F1: { name: 'F1 自信指数', model: '球场自我' },
+      F2: { name: 'F2 存在感', model: '球场自我' },
+      F3: { name: 'F3 自我定位', model: '球场自我' },
+      E1: { name: 'E1 压力反应', model: '情绪引擎' },
+      E2: { name: 'E2 愤怒管理', model: '情绪引擎' },
+      E3: { name: 'E3 情感投入', model: '情绪引擎' },
+      T1: { name: 'T1 战术理解', model: '战术大脑' },
+      T2: { name: 'T2 规则意识', model: '战术大脑' },
+      T3: { name: 'T3 临场应变', model: '战术大脑' },
+      Ac1: { name: 'Ac1 执行力', model: '行动模式' },
+      Ac2: { name: 'Ac2 逃跑速度', model: '行动模式' },
+      Ac3: { name: 'Ac3 脑洞指数', model: '行动模式' },
+      S1: { name: 'S1 队友关系', model: '社交球场' },
+      S2: { name: 'S2 裁判态度', model: '社交球场' },
+      S3: { name: 'S3 表演欲望', model: '社交球场' }
+    };
+
+    const questions = [
+      {
+        id: 'q1', dim: 'F3',
+        text: '赛前热身时，你发现球场上空有一架无人机，你会：',
+        options: [
+          { label: '觉得那是俱乐部在拍我的帅照，赶紧收腹挺胸', value: 3 },
+          { label: '担心它是来投毒的，试图用球把它击落', value: 2 },
+          { label: '思考它有没有 5G 信号，想连上去刷个短视频', value: 1 }
+        ]
+      },
+      {
+        id: 'q2', dim: 'F1',
+        text: '裁判吹哨开球的瞬间，你的第一反应是：',
+        options: [
+          { label: '热血沸腾，感觉自己是贝利附体', value: 3 },
+          { label: '吓了一跳，以为是警察来抓我了', value: 2 },
+          { label: '疑惑：我是谁？我在哪？为什么要追一个圆形物体？', value: 1 }
+        ]
+      },
+      {
+        id: 'q3', dim: 'F2',
+        text: '当足球滚到你脚下，但对方三个人包夹过来：',
+        options: [
+          { label: '躺下，假装自己是一块草皮，试图与大自然融为一体', value: 2 },
+          { label: '闭上眼往前闷一脚，听天由命，看谁命硬', value: 3 },
+          { label: '把球抱起来，大喊：「暂停！我鞋带松了！」', value: 1 }
+        ]
+      },
+      {
+        id: 'q4', dim: 'T2',
+        text: '尝试踩单车过人，结果把自己绊倒了：',
+        options: [
+          { label: '保持摔倒姿势，原地表演一段高难度地板舞', value: 2 },
+          { label: '愤怒地检查草坪，暗示这块草皮有自己的主见', value: 3 },
+          { label: '趴在地上不起来，直到担架队过来抬你走', value: 1 }
+        ]
+      },
+      {
+        id: 'q5', dim: 'E1',
+        text: '对方单刀冲向球门，身为门将的你：',
+        options: [
+          { label: '张开双臂大喊：「你过来啊！」试图从灵魂上震慑他', value: 3 },
+          { label: '开始原地旋转，试图制造小型龙卷风挡住球', value: 2 },
+          { label: '干脆转过身去，不忍直视即将发生的惨剧', value: 1 }
+        ]
+      },
+      {
+        id: 'q6', dim: 'E3',
+        text: '教练在场边对你咆哮，你觉得：',
+        options: [
+          { label: '他在练习高音，甚至想给他的声带打个分数', value: 2 },
+          { label: '他的口水可能会喷到我贵重的发型上', value: 3 },
+          { label: '听不清，但我点头就对了，只要不换下我', value: 1 }
+        ]
+      },
+      {
+        id: 'q7', dim: 'E2',
+        text: '完成了一次精彩传球，但队友没接住：',
+        options: [
+          { label: '冲过去对队友进行长达 5 分钟的「法式礼貌」问候', value: 3 },
+          { label: '默默看着天空，感受孤独是今天的球场主色调', value: 2 },
+          { label: '对着转播镜头摊手，表示这届队友带不动', value: 1 }
+        ]
+      },
+      {
+        id: 'q8', dim: 'T3',
+        text: '场上的足球突然漏气了：',
+        options: [
+          { label: '用嘴把它吹起来，展现惊人的肺活量', value: 2 },
+          { label: '把它当作飞盘扔给场边的流浪狗', value: 3 },
+          { label: '趁机宣布比赛结束，领工资回家吃泡面', value: 1 }
+        ]
+      },
+      {
+        id: 'q9', dim: 'F2',
+        text: '被换下场时，全场响起嘘声，你：',
+        options: [
+          { label: '优雅谢幕，觉得这是对「反派巨星」的最高致敬', value: 3 },
+          { label: '走得很慢，试图用这几步路走完剩下的人生', value: 2 },
+          { label: '掏出手机，跟看台上的观众对拍', value: 1 }
+        ]
+      },
+      {
+        id: 'q10', dim: 'F3',
+        text: '被换下场后坐在替补席，你的第一反应是：',
+        options: [
+          { label: '立刻掏出手机开始刷视频，假装什么都没发生', value: 3 },
+          { label: '跟旁边的板凳聊天，因为它比教练更懂我', value: 2 },
+          { label: '闭上眼睛，在心里已经完成了帽子戏法', value: 1 }
+        ]
+      },
+      {
+        id: 'q11', dim: 'Ac1',
+        text: '更衣室气压极低，你决定：',
+        options: [
+          { label: '掏出手机开始刷小红书，假装自己很忙', value: 2 },
+          { label: '躲在衣柜里，试图穿越到纳尼亚', value: 3 },
+          { label: '突然唱起《难忘今宵》，试图缓解气氛', value: 1 }
+        ]
+      },
+      {
+        id: 'q12', dim: 'T1',
+        text: '队友在争论战术，你建议：',
+        options: [
+          { label: '大家手拉手围成一圈，保护足球不被抢走', value: 3 },
+          { label: '谁长得帅、身价高，谁就去进球', value: 2 },
+          { label: '取消门将，放个垃圾桶在那里，多出一个人去进攻', value: 1 }
+        ]
+      },
+      {
+        id: 'q13', dim: 'Ac3',
+        text: '如果你是队长，你的训话核心是：',
+        options: [
+          { label: '「踢完这场，门口火锅我请客，前提是别输太惨。」', value: 2 },
+          { label: '「足球是圆的，人生是空的，所以大家随缘吧。」', value: 3 },
+          { label: '「不管输赢，发朋友圈的照片一定要显瘦。」', value: 1 }
+        ]
+      },
+      {
+        id: 'q14', dim: 'E2',
+        text: '发现队友偷吃你的能量棒：',
+        options: [
+          { label: '在他的球鞋里灌满过期的运动饮料', value: 3 },
+          { label: '加入他，两个人一起去偷教练的战术板当零食', value: 2 },
+          { label: '蹲在角落画圈圈，诅咒他下次射门中横梁', value: 1 }
+        ]
+      },
+      {
+        id: 'q15', dim: 'T1',
+        text: '教练画的战术板在你眼里像：',
+        options: [
+          { label: '某种神秘的克苏魯召唤阵，看了会掉理智值', value: 2 },
+          { label: '昨晚点外卖时随手涂鸦的草稿', value: 3 },
+          { label: '一幅极具张力的后现代主义抽象画', value: 1 }
+        ]
+      },
+      {
+        id: 'q16', dim: 'T2',
+        text: '迷信的你，赛前仪式是：',
+        options: [
+          { label: '必须先迈左脚，如果错了就退回去重新走', value: 2 },
+          { label: '对着球衣上的队徽磕三个头', value: 3 },
+          { label: '转发一条「转发这个贝利，这场比赛不输」的动态', value: 1 }
+        ]
+      },
+      {
+        id: 'q17', dim: 'S3',
+        text: '你最喜欢的球衣号码及理由：',
+        options: [
+          { label: '0 号：象征我空空如也的战术大脑', value: 2 },
+          { label: '99 号：看起来像个随时会爆炸的炸弹，很酷', value: 3 },
+          { label: '50 号：代表我只有一半的时间在认真踢', value: 1 }
+        ]
+      },
+      {
+        id: 'q18', dim: 'E3',
+        text: '洗澡水突然变冷了：',
+        options: [
+          { label: '忍着，想象自己是冰岛国脚在雪地训练', value: 3 },
+          { label: '冲出去大喊「有内鬼，终止洗澡」', value: 2 },
+          { label: '默默流泪，分不清脸上是水还是委屈', value: 1 }
+        ]
+      },
+      {
+        id: 'q19', dim: 'S1',
+        text: '对于金球奖，你的态度是：',
+        options: [
+          { label: '只要我踢得够烂，世界就没法定义我', value: 2 },
+          { label: '应该颁给球场边那只从不越位的流浪猫', value: 3 },
+          { label: '其实我也能领，只要他们把标准改成「最可爱」', value: 1 }
+        ]
+      },
+      {
+        id: 'q20', dim: 'E1',
+        text: '测测抗压性，1秒内选一个：',
+        options: [
+          { label: 'VAR', value: 2 },
+          { label: 'SB', value: 3 },
+          { label: 'OK', value: 1 }
+        ]
+      },
+      {
+        id: 'q21', dim: 'Ac1',
+        text: '你们 0:5 惨败，赛后你发的朋友圈是：',
+        options: [
+          { label: '感谢大家支持，未来可期（附九宫格帅照）', value: 2 },
+          { label: '消失在夜色中，连夜注销社交媒体账号', value: 3 },
+          { label: '转发一条美食攻略，假装比赛从未发生', value: 1 }
+        ]
+      },
+      {
+        id: 'q22', dim: 'S2',
+        text: '记者问你为什么输球，你回答：',
+        options: [
+          { label: '「今天的草太绿了，绿得我心慌。」', value: 2 },
+          { label: '「对方的球门位置一直在移动，我有证据。」', value: 3 },
+          { label: '「可能是因为我昨晚梦见足球变成了汉堡。」', value: 1 }
+        ]
+      },
+      {
+        id: 'q23', dim: 'S3',
+        text: '回家路上看到路边有个易拉罐：',
+        options: [
+          { label: '给它一个弧线球，结果精准踢到班主任（或老板）', value: 3 },
+          { label: '绕着它走，PTSD 犯了，总觉得它要铲我', value: 2 },
+          { label: '把它捡起来，问它：「兄弟，你觉得我踢得好吗？」', value: 1 }
+        ]
+      },
+      {
+        id: 'q24', dim: 'Ac3',
+        text: '如果你要写自传，书名会叫：',
+        options: [
+          { label: '《我在禁区散步的那几年：优雅与摆烂》', value: 2 },
+          { label: '《红牌：我与裁判的 100 次亲密接触》', value: 3 },
+          { label: '《足球？那不是用来踢的，是用来躲的》', value: 1 }
+        ]
+      },
+      {
+        id: 'q25', dim: 'Ac2',
+        text: '经纪人告诉你没有球队想要你：',
+        options: [
+          { label: '「太好了，终于可以全职去直播打游戏了。」', value: 1 },
+          { label: '「那是因为他们配不上我的后现代足球艺术。」', value: 2 },
+          { label: '「没关系，我自己组建一支球队，我是唯一的球员。」', value: 3 }
+        ]
+      },
+      {
+        id: 'q26', dim: 'S1',
+        text: '看到球星失误，你的感想：',
+        options: [
+          { label: '疯狂嘲笑，觉得换我也能踢成那样', value: 3 },
+          { label: '留下一滴泪，感叹同为「足坛笑柄」的悲哀', value: 2 },
+          { label: '思考他失误后的公关稿是谁写的，多少钱', value: 1 }
+        ]
+      },
+      {
+        id: 'q27', dim: 'F1',
+        text: '梦进了一个世界波：',
+        options: [
+          { label: '醒来发现自己踢飞了被子，还把水杯踢碎了', value: 3 },
+          { label: '醒来后感到一阵悲凉，发现这是我辈子唯一的进球', value: 2 },
+          { label: '赶紧闭眼，试图回去补个庆祝动作', value: 1 }
+        ]
+      },
+      {
+        id: 'q28', dim: 'T3',
+        text: '最想拥有的技能：',
+        options: [
+          { label: '随时随地在场上隐身，不被教练和球发现', value: 1 },
+          { label: '让裁判瞬间失忆，忘记我刚刚进的乌龙球', value: 2 },
+          { label: '脚法精准到能踢中场边正在骂我的观众', value: 3 }
+        ]
+      },
+      {
+        id: 'q29', dim: 'S2',
+        text: '对你来说，足球是什么：',
+        options: [
+          { label: '90 分钟的带薪折磨，体力劳动的极限', value: 2 },
+          { label: '一种圆形的、会滚动的、充满恶意的烦恼', value: 3 },
+          { label: '只是我换个地方展示新球鞋的借口', value: 1 }
+        ]
+      },
+      {
+        id: 'q30', dim: 'Ac2',
+        text: '最后一题，你对这个测试的感想：',
+        options: [
+          { label: '什么鬼，我的智商遭到了毁灭性打击', value: 2 },
+          { label: '准到发疯，这不就是我在场上的精神状态吗？', value: 3 },
+          { label: '我没看题，我是盲选的，就像我射门一样', value: 1 }
+        ]
+      }
+    ];
+
+    const specialQuestions = [
+      {
+        id: 'retire_gate_q1',
+        special: true,
+        kind: 'retire_gate',
+        text: '此题没有题目，请根据直觉盲选：',
+        options: [
+          { label: '越位', value: 2 },
+          { label: '点球', value: 3 },
+          { label: '谢谢参与', value: 1 }
+        ]
+      }
+    ];
+
+    const TYPE_LIBRARY = {
+      "WALK": {
+        "code": "WALK",
+        "cn": "散步前锋",
+        "intro": "全场散步 90 分钟，赛后朋友圈步数第一。",
+        "desc": "你不是来踢球的，你是来计步的。你的手环永远在炫耀今天的运动量，但没人知道你其实只是在球场上游荡。对方后卫都怕你——怕你撞到他们因为你在看风景。教练换你下场不是因为你踢得差，是因为你妨碍了其他人「真的在踢球」。你最大的成就是赛后朋友圈的步数排行，永远第一名。"
+      },
+      "DIVE": {
+        "code": "DIVE",
+        "cn": "影帝",
+        "intro": "草皮是床，对方是导演，你是最佳男主角。",
+        "desc": "你的一生都在等待那个完美的触电瞬间。草皮是你的床，对方是你的编剧，裁判是你要说服的观众。你倒地的姿势优雅得像芭蕾舞演员，痛苦的表情真实到连你自己都快信了。奥斯卡欠你一座小金人，但足球联合会只想给你一张黄牌。你的演技在好莱坞可能被低估，但在球场上，每个人都是你的观众。"
+      },
+      "GHOST": {
+        "code": "GHOST",
+        "cn": "隐形人",
+        "intro": "GPS 定位不到你，队友以为你请假了。",
+        "desc": "你在场上的存在感比量子力学还不稳定。队友传球的时候经常忘记你在那个位置，对方防守球员也经常不知道要防谁。教练换人时候需要确认你是不是真的上场了。你唯一的优势是，犯规的永远不是你——因为没人看得到你在哪。你是足球场上的幽灵，唯一能证明你存在的是球衣上的名字，但就连那个也有人怀疑是印错的。"
+      },
+      "REDS": {
+        "code": "REDS",
+        "cn": "红牌收藏家",
+        "intro": "红牌比你进球多，墙上挂满了纪念品。",
+        "desc": "你把红牌当成集邮。每场比赛你都问自己：今天要不要刷新纪录？裁判看到你就头疼，因为他知道迟早要掏牌。你的家人已经习惯了你在第 60 分钟就洗澡回家。你说红色是你的幸运色，但实际上它只是你的必经色。你的收藏品里没有奖杯，只有红牌，但你说那是荣誉的象征——毕竟，不是每个人都有资格被罚下场那么多次。"
+      },
+      "CAPT": {
+        "code": "CAPT",
+        "cn": "自封队长",
+        "intro": "没人选你但你就是队长，球衣上自写 C。",
+        "desc": "你不是球队选出来的队长，你是自己任命的。你的球衣上可能有个用记号笔写的 C，但没人知道那是什么意思。你经常在场上指手画脚，但队友以为你在跟空气说话。你的领导风格是「如果没人听我的，我就自己踢给自己看」。你相信自己是天生的领袖，问题是除了你自己，没有人知道你在领导什么。"
+      },
+      "BNCH": {
+        "code": "BNCH",
+        "cn": "板凳哲学家",
+        "intro": "坐板凳悟出了宇宙真理，上场反而浪费。",
+        "desc": "你是板凳上的思想者。在替补席坐了 90 分钟，你已经想通了人生、宇宙和一切的答案。教练说「你上场」，你觉得他是在打断你的思考。你实际上踢球的时间加起来可能还不够你思考「为什么我要踢球」的时间。你的哲学思想比你的场上时间更丰富，而你觉得这是一件值得骄傲的事。"
+      },
+      "HOGG": {
+        "code": "HOGG",
+        "cn": "独狼",
+        "intro": "宁可带球跑 100 米也不传，传了算我输。",
+        "desc": "你眼中的队友是障碍物，不是接应点。你宁愿带球绕地球一圈也不愿意传出一脚简单的球。你的盘带距离统计比全队加起来还多。教练说团队配合，你听成「团队看我配合」。你唯一的问题是，有时候连你自己都不知道你要往哪跑。你是一个人的军队，问题是这支军队经常迷路。"
+      },
+      "FAKE": {
+        "code": "FAKE",
+        "cn": "假動作大師",
+        "intro": "晃倒了自己，也晃倒了裁判，就是没晃到对手。",
+        "desc": "你的假动作太假了，假到对方都被你逗笑了。你晃过了所有人——你自己、裁判、甚至场边的观众——唯一的问题是对方球员根本没动。你说这是「心理战术」，但实际上只是你在跳草裙舞。你的盘带是现代艺术，没人看得懂，包括你自己。裁判有时候给你犯规是因为他也被你晃晕了。"
+      },
+      "LUCK": {
+        "code": "LUCK",
+        "cn": "錦鯉",
+        "intro": "全靠運氣踢球，但運氣從來沒來過。",
+        "desc": "你是足球场上的锦鲤，但你好像是一条死鱼。你说你靠运气，但运气好像不太喜欢你。你射门的时候球门会移动，你传球的时候队友会瞬移。你相信总有一天你的运气会来，但那可能需要等到下一辈子。你买彩票从来不中，但你还是坚信下一场比赛你的运气会转变——尽管过了 100 场还没转。"
+      },
+      "LEGD": {
+        "code": "LEGD",
+        "cn": "自封傳奇",
+        "intro": "退休十年的老兵，嘴上還在重播當年。",
+        "desc": "你已經退役了十年，但你的嘴還在場上踢球。你永遠在講「那一年」的故事，但沒人記得那一年是哪一年。你的榮耀都是回憶裡的，現實中的你只是個喜歡懷舊的大叔。你說你寶刀未老，但刀已經生鏽了。你的故事比你的實際表精彩多了，而這就是你最大的問題。"
+      },
+      "CURV": {
+        "code": "CURV",
+        "cn": "弧线射手",
+        "intro": "每脚都是世界波的弧线，只是弧到了界外。",
+        "desc": "你追求每一脚都是世界波，问题是它们真的波动到了界外。你的弧线球太弯了，弯到守门员都不用扑救，因为球已经在角旗区了。你说这是「艺术」，但教练说这是「浪费时间」。你唯一的安慰是，界外球永远是你的，因为只有你才能踢出那么夸张的界外。你是边线裁判最喜欢的球员，因为你总是给他们工作。"
+      },
+      "SPNG": {
+        "code": "SPNG",
+        "cn": "海绵防守",
+        "intro": "对方射门全穿过你，但你至少挡住了风。",
+        "desc": "你是一块海绵。对方的射门穿过你，带球的前锋穿过你，就连裁判都偶尔会忘记你的存在。你说你在防守，但你实际上是在当人形风障。你的防守统计很漂亮——因为你根本碰不到球。你是一个善良的人，你不会阻挡任何人的前进之路，包括对方前锋。"
+      },
+      "BLND": {
+        "code": "BLND",
+        "cn": "盲人踢球",
+        "intro": "球从哪来不知道，球往哪去不知道，快乐就完了。",
+        "desc": "你踢球的状态永远是「我是谁？我在哪？球在哪？」。你的传球全靠蒙，射门全靠猜。你最大的优势是你永远不会因为错失机会而难过，因为你根本不知道有机会。你是快乐足球的极致体现——因为你对发生在场上的一切一无所知。你的队友经常想知道你在看什么，答案通常什么都没有。"
+      },
+      "DANC": {
+        "code": "DANC",
+        "cn": "绿茵舞者",
+        "intro": "过人是跳舞，进球是谢幕，犯规是斗舞。",
+        "desc": "你把足球场当成了舞池。过人是跳舞，进球是谢幕，犯规是和对方斗舞。你的盘带优雅得像在表演芭蕾，但问题是足球比赛不是舞蹈比赛。观众很喜欢看你踢球，但教练希望你能够把球往前踢而不是往旁边踢。你是场上最艺术的球员，也是最让教练头痛的那个。"
+      },
+      "MISS": {
+        "code": "MISS",
+        "cn": "精准打飞",
+        "intro": "空门不进是你的艺术表达，效率为零。",
+        "desc": "你有一项特殊技能：把不可能打飞的球打飞出去。空门、点球、甚至已经滚进去的球，你都能找到方法让它们不进。这是一门艺术，一门让教练心脏病发作的艺术。你说你在追求完美，但完美永远与你擦肩而过。你是越位陷阱的最大受害者，因为你越位了也进不了。"
+      },
+      "HOOL": {
+        "code": "HOOL",
+        "cn": "球场暴徒",
+        "intro": "踢球是副业，吵架是主业，打架是特长。",
+        "desc": "你来球场主要是为了吵架和打架。踢球只是你的副业，喷裁判、喷对手、喷队友才是你的主业。你的纪录不是进球数，而是与裁判争吵的次数。你说这是「激情」，但别人说这是「问题」。你的黄牌比助攻多，红牌比进球多，但你觉得这是因为裁判对你有偏见。"
+      },
+      "ZEN": {
+        "code": "ZEN",
+        "cn": "佛系球员",
+        "intro": "赢了随缘，输了随缘，中场休息在冥想。",
+        "desc": "你是足球场上的佛陀。赢了随缘，输了随缘，中场休息你在冥想。你的心跳永远是 60，不管比赛到了第 90 分钟还是伤停补时。教练希望你激动一点，但你只是微笑着说「一切皆是虚空」。你是球场上最平静的球员，也是最让教练抓狂的那个——因为你好像不在乎输赢。"
+      },
+      "DRMA": {
+        "code": "DRMA",
+        "cn": "戲精",
+        "intro": "比賽是你的舞台，全世界都是觀眾，包括草皮。",
+        "desc": "你把每一场比赛都当成最后一场表演。你的表情丰富得能拿艾美奖，你的肢体语言能讲一个完整的故事。问题是足球比赛不是戏剧节目，你的队友只想把球踢进球门，而不是看你表演。你是球场上的明星，至少在你自己眼里是。转播镜头很喜欢你，因为你总是给它们素材。"
+      },
+      "WALL": {
+        "code": "WALL",
+        "cn": "人牆",
+        "intro": "你不是在防守，你就是一面墙，但墙上没有门。",
+        "desc": "你就是一面墙。你站在那里，不移动、不反应，就是存在。对方前锋看到你都觉得无聊，因为你根本不会去抢球。你说这是「站桩防守」，但实际上你只是在站桩。你是任意球墙的核心成员，因为你不会动，也不会怕被球砸到。问题是，有时候你忘了比赛已经重新开始了。"
+      },
+      "RADR": {
+        "code": "RADR",
+        "cn": "人形雷達",
+        "intro": "知道球在哪，知道人在哪，就是腿跟不上。",
+        "desc": "你的大脑是雷达，永远知道球在哪、人在哪、应该往哪跑。问题是你的腿没有收到消息。你总是知道正确的选择，但你永远慢了半步。你是一个困在错误身体里的天才战术家。你是球场上的分析师，如果你能在家里看比赛，你会告诉场上的自己做什么——可惜你在场上，腿跟不上大脑。"
+      },
+      "OGLN": {
+        "code": "OGLN",
+        "cn": "烏龍大師",
+        "intro": "对方的最佳射手，球场上的双面间谍。",
+        "desc": "你是对方球队的秘密武器。你进的球比己方的还多，只是方向反了。你的乌龙球技术一流，精准度比你的正规射门还高。你说这是「意外」，但对方已经开始给你发工资了。你是球场上的双面间谍，每个人都想知道你到底为哪边踢球，包括你自己。"
+      },
+      "PHILO": {
+        "code": "PHILO",
+        "cn": "足球哲學家",
+        "intro": "不踢球，只思考球，草皮上的蘇格拉底。",
+        "desc": "你在球场上思考人生。为什么球是圆的？为什么要踢进球门？为什么我们要追逐一个充气的皮革？你的队友在跑步，你在脑子里跑马拉松。你是一个被困在足球运动员身体里的哲学家。你的问题比你的答案多，而你的答案比你的进球多。教练有时候怀疑你是不是来错地方了，哲学系可能更适合你。"
+      },
+      "CHOS": {
+        "code": "CHOS",
+        "cn": "混沌製造者",
+        "intro": "沒人知道你要幹嘛，包括你自己。",
+        "desc": "你是行走的不确定性原理。没人知道你要做什么，包括你自己。你的盘带是随机的，你的传球是概率的，你的射门是量子力学的。教练放你上场是为了混乱对方，但往往先混乱的是己方。你是足球场上的薛定谔猫，在你踢球之前，没人知道会发生什么，包括你自己。"
+      },
+      "SNIP": {
+        "code": "SNIP",
+        "cn": "毒蛇前鋒",
+        "intro": "全場隱形 89 分鐘，然後在補時進一個。",
+        "desc": "你是毒蛇，隐藏在草丛里，等待最致命的时刻。问题是有时候你隐藏得很好，好到连你自己都忘记了比赛还在进行。你在补时阶段进的球比正赛还多，但那通常是因为你之前一直在梦游。你是球场上的刺客，问题是有时候你忘记了要刺杀谁。"
+      },
+      "HERO": {
+        "code": "HERO",
+        "cn": "孤膽英雄",
+        "intro": "一个人扛着球队前进，因为队友都在散步。",
+        "desc": "你是英雄，一个人的英雄。你独自扛着球队前进，因为你的队友都在散步。你抱怨没人配合，但实际上你从不传球。你说你是被迫的，但实际上你享受这种「只有我能拯救世界」的感觉。你是球场上的独行侠，问题是有时候你忘了这是一个团队运动。"
+      },
+      "LOST": {
+        "code": "LOST",
+        "cn": "迷路人",
+        "intro": "你连人格测试都能迷路，场上迷路不是意外。",
+        "desc": "你真的迷路了。连一个标准答案都没有的人格测试，你都能答出一个不符合任何模板的结果。这在某种程度上是一种成就——你成功逃逸了任何分类系统。你在球场上也一样，没人知道你会出现在哪，包括你自己。你是自由的灵魂，只是这份自由有时候让你找不到球门在哪。"
+      },
+      "RETD": {
+        "code": "RETD",
+        "cn": "退役大师",
+        "intro": "你不是在踢球，你是在完成退休巡回演出。",
+        "desc": "你已经在精神上退休了。这场测试你选了「谢谢参与」，就像你在场上选择了「感谢观看」一样。你不是在踢球，你是在提前体验退休生活。你的球衣应该挂在博物馆，而不是穿在身上。你是球场上的传奇，传奇就应该及时退役，而不是继续折磨自己。"
+      }
+    };
+
+    const NORMAL_TYPES = [
+      { "code": "WALK", "pattern": "HLL-LHL-LML-LML-MMH" },
+      { "code": "DIVE", "pattern": "HLH-MHH-MHL-HLM-HHM" },
+      { "code": "GHOST", "pattern": "LLL-LLL-LLL-LLL-LML" },
+      { "code": "REDS", "pattern": "LHH-HHH-MHH-MHH-HHH" },
+      { "code": "CAPT", "pattern": "HHL-HMH-HMH-HHH-HHH" },
+      { "code": "BNCH", "pattern": "MLL-LLM-MLM-MLM-LML" },
+      { "code": "HOGG", "pattern": "HHL-MHH-HLM-HHH-MHL" },
+      { "code": "FAKE", "pattern": "HMH-MHM-HHH-MHH-MHM" },
+      { "code": "LUCK", "pattern": "MMH-MLM-MLL-MML-MMM" },
+      { "code": "LEGD", "pattern": "HHH-MLM-HML-HHL-HMH" },
+      { "code": "CURV", "pattern": "HML-MHM-HHM-MHH-HLM" },
+      { "code": "SPNG", "pattern": "MLH-MMM-MML-MMM-MLL" },
+      { "code": "BLND", "pattern": "LML-LLM-LLL-MLL-LMH" },
+      { "code": "DANC", "pattern": "MHM-HMH-MHH-HMH-HHM" },
+      { "code": "MISS", "pattern": "HLH-MLL-HML-MHH-HML" },
+      { "code": "HOOL", "pattern": "LHH-HHH-MHH-HHH-LHH" },
+      { "code": "ZEN",  "pattern": "MMM-MMM-MMM-MMM-MMM" },
+      { "code": "DRMA", "pattern": "MHH-HHH-HHH-MHH-HHH" },
+      { "code": "WALL", "pattern": "MLH-LMM-MHM-HLM-MLM" },
+      { "code": "RADR", "pattern": "MML-MLM-HMM-LMM-MML" },
+      { "code": "OGLN", "pattern": "LMH-MLM-HML-MHL-LLH" },
+      { "code": "PHILO", "pattern": "MML-MML-MHM-LML-MML" },
+      { "code": "CHOS", "pattern": "HML-HHH-HHH-HHH-MHM" },
+      { "code": "SNIP", "pattern": "HLL-LLL-MLL-HHL-LLL" },
+      { "code": "HERO", "pattern": "HHL-HLM-HHH-HHH-HML" }
+    ];
+
+    const DIM_EXPLANATIONS = {
+      "F1": {
+        "L": "覺得自己就是個來湊數的，能跑動就算贏了。",
+        "M": "自信值隨發揮波動，進了球我是貝利，丟了球我是誰。",
+        "H": "心里对自己有数，我是球场之王，就算进了乌龙也是王的决策。"
+      },
+      "F2": {
+        "L": "队友经常忘记我在场上，连我自己也经常忘记。",
+        "M": "大部分時候知道自己在踢球，偶爾會靈魂出竅。",
+        "H": "存在感滿滿，球在哪我就在哪，我是場地的延伸。"
+      },
+      "F3": {
+        "L": "对自己有清醒认识，我就是个来踢着玩的。",
+        "M": "以为是主力，教练以为我是替补，现实以为我是吉祥物。",
+        "H": "我是什么水平？世界级。至少在我自己的平行宇宙里。"
+      },
+      "E1": {
+        "L": "被逼急了会爆炸，带球被包夹会原地崩溃。",
+        "M": "压力大了我会慌，但还能保持基本的人形。",
+        "H": "压力越大我越兴奋，我是关键时刻的致命武器。"
+      },
+      "E2": {
+        "L": "情绪稳定，丢球只是常态，没什么好生气的。",
+        "M": "偶尔会喷队友，但大部分时候选择沉默承受。",
+        "H": "喷裁判、喷对手、喷队友、喷草皮，没有我不能喷的。"
+      },
+      "E3": {
+        "L": "踢球嘛，开心就好，输赢无所谓，工资照领。",
+        "M": "想赢，但也不会因为输了睡不着觉。",
+        "H": "这就是我的生命，每一场比赛都是世界杯决赛。"
+      },
+      "T1": {
+        "L": "战术板对我来说就是抽象艺术，看了也不懂。",
+        "M": "大战术懂一点，小战术靠运气。",
+        "H": "我看的不是比赛，是战术博弈的棋局，教练没我懂球。"
+      },
+      "T2": {
+        "L": "规则？建议？我觉得可以打破的就都不是真正的规则。",
+        "M": "大部分时候守规则，但有时候会创造性诠释。",
+        "H": "规则就是用来遵守的，越位就是越位，手球就是手球。"
+      },
+      "T3": {
+        "L": "突发状况？我一般选择原地呆住。",
+        "M": "能应付，应变能力中等偏上。",
+        "H": "别人的脑洞是漏的，我的脑洞是通的，总有神操作。"
+      },
+      "Ac1": {
+        "L": "说到做到？不，我是说到躺到。",
+        "M": "想做，但经常做到一半就放弃了。",
+        "H": "执行力爆表，说踢进就踢进，除非我没踢进。"
+      },
+      "Ac2": {
+        "L": "遇到困难的第一反应是：怎么撤退才优雅？",
+        "M": "会坚持，但实在不行就撤。",
+        "H": "逃跑速度为零，我从不退缩，除非被换下场。"
+      },
+      "Ac3": {
+        "L": "脑洞约等于没有，按常理出牌。",
+        "M": "偶尔会有奇怪的想法，但大部分时候正常。",
+        "H": "我的解决方案总是出人意料，连我自己都惊讶。"
+      },
+      "S1": {
+        "L": "队友是什么？我记得我也是一个人在踢。",
+        "M": "和队友关系一般，不亲不疏。",
+        "H": "队友就是兄弟，我们是一家人，进球一起庆祝，丢球一起背锅。"
+      },
+      "S2": {
+        "L": "裁判永远是对的，就算错了也是对的，我不能说。",
+        "M": "会和裁判理论，但不会太过分。",
+        "H": "裁判是我的对话伙伴，每场比赛我们都有深入交流。"
+      },
+      "S3": {
+        "L": "镜头？什么镜头？我只知道球在哪。",
+        "M": "会偷偷看镜头，但假装不在意。",
+        "H": "镜头在哪我就在哪，我是天生的明星，观众爱死我了。"
+      }
+    };
+
+    const dimensionOrder = ['F1','F2','F3','E1','E2','E3','T1','T2','T3','Ac1','Ac2','Ac3','S1','S2','S3'];
+
+    const RETIRE_TRIGGER_QUESTION_ID = 'retire_gate_q1';
+
+    const app = {
+      shuffledQuestions: [],
+      answers: {},
+      previewMode: false
+    };
+
+    const screens = {
+      intro: document.getElementById('intro'),
+      test: document.getElementById('test'),
+      result: document.getElementById('result'),
+      allTypes: document.getElementById('allTypes')
+    };
+
+    const questionList = document.getElementById('questionList');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const submitBtn = document.getElementById('submitBtn');
+    const testHint = document.getElementById('testHint');
+
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, el]) => {
+        el.classList.toggle('active', key === name);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function getVisibleQuestions() {
+      return [...app.shuffledQuestions];
+    }
+
+    function getQuestionMetaLabel(q) {
+      if (q.special) return '特殊题';
+      return app.previewMode ? dimensionMeta[q.dim].name : '维度已隐藏';
+    }
+
+    function renderQuestions() {
+      const visibleQuestions = getVisibleQuestions();
+      questionList.innerHTML = '';
+      visibleQuestions.forEach((q, index) => {
+        const card = document.createElement('article');
+        card.className = 'question';
+        card.innerHTML = `
+          <div class="question-meta">
+            <div class="badge">第 ${index + 1} 題</div>
+            <div>${getQuestionMetaLabel(q)}</div>
+          </div>
+          <div class="question-title">${q.text}</div>
+          <div class="options">
+            ${q.options.map((opt, i) => {
+              const code = ['A', 'B', 'C'][i] || String(i + 1);
+              const checked = app.answers[q.id] === opt.value ? 'checked' : '';
+              return `
+                <label class="option">
+                  <input type="radio" name="${q.id}" value="${opt.value}" ${checked} />
+                  <div class="option-code">${code}</div>
+                  <div>${opt.label}</div>
+                </label>
+              `;
+            }).join('')}
+          </div>
+        `;
+        questionList.appendChild(card);
+      });
+
+      questionList.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const { name, value } = e.target;
+          app.answers[name] = Number(value);
+          updateProgress();
+        });
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const visibleQuestions = getVisibleQuestions();
+      const total = visibleQuestions.length;
+      const done = visibleQuestions.filter(q => app.answers[q.id] !== undefined).length;
+      const percent = total ? (done / total) * 100 : 0;
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${done} / ${total}`;
+      const complete = done === total && total > 0;
+      submitBtn.disabled = !complete;
+      testHint.textContent = complete
+        ? '都做完了。现在可以把你的足球灵魂交给结果页审判。'
+        : '全选完才会放行。世界已经够乱了，起码把题做完整。';
+    }
+
+    function sumToLevel(score) {
+      if (score <= 3) return 'L';
+      if (score === 4) return 'M';
+      return 'H';
+    }
+
+    function levelNum(level) {
+      return { L: 1, M: 2, H: 3 }[level];
+    }
+
+    function parsePattern(pattern) {
+      return pattern.replace(/-/g, '').split('');
+    }
+
+    function getRetireTriggered() {
+      return app.answers[RETIRE_TRIGGER_QUESTION_ID] === 1;
+    }
+
+    function computeResult() {
+      const rawScores = {};
+      const levels = {};
+      Object.keys(dimensionMeta).forEach(dim => { rawScores[dim] = 0; });
+
+      questions.forEach(q => {
+        rawScores[q.dim] += Number(app.answers[q.id] || 0);
+      });
+
+      Object.entries(rawScores).forEach(([dim, score]) => {
+        levels[dim] = sumToLevel(score);
+      });
+
+      const userVector = dimensionOrder.map(dim => levelNum(levels[dim]));
+      const ranked = NORMAL_TYPES.map(type => {
+        const vector = parsePattern(type.pattern).map(levelNum);
+        let distance = 0;
+        let exact = 0;
+        for (let i = 0; i < vector.length; i++) {
+          const diff = Math.abs(userVector[i] - vector[i]);
+          distance += diff;
+          if (diff === 0) exact += 1;
+        }
+        const similarity = Math.max(0, Math.round((1 - distance / 30) * 100));
+        return { ...type, ...TYPE_LIBRARY[type.code], distance, exact, similarity };
+      }).sort((a, b) => {
+        if (a.distance !== b.distance) return a.distance - b.distance;
+        if (b.exact !== a.exact) return b.exact - a.exact;
+        return b.similarity - a.similarity;
+      });
+
+      const bestNormal = ranked[0];
+      const retireTriggered = getRetireTriggered();
+
+      let finalType;
+      let modeKicker = '你的主类型';
+      let badge = `匹配度 ${bestNormal.similarity}% · 精准命中 ${bestNormal.exact}/15 维`;
+      let sub = '维度命中度较高，当前结果可视为你的第一人格画像。';
+      let special = false;
+      let secondaryType = null;
+
+      if (retireTriggered) {
+        finalType = TYPE_LIBRARY.RETD;
+        secondaryType = bestNormal;
+        modeKicker = '隐藏人格已激活';
+        badge = '匹配度 100% · 退休大师已上线';
+        sub = '你选择了「謝謝參與」，这意味著你已经提前完成了退役巡迴演出。';
+        special = true;
+      } else if (bestNormal.similarity < 60) {
+        finalType = TYPE_LIBRARY.LOST;
+        modeKicker = '系统强制兜底';
+        badge = `标准人格库最高匹配仅 ${bestNormal.similarity}%`;
+        sub = '标准人格库对你的脑回路集体罢工了，于是系统把你强制分配给了迷路人。';
+        special = true;
+      } else {
+        finalType = bestNormal;
+      }
+
+      return {
+        rawScores,
+        levels,
+        ranked,
+        bestNormal,
+        finalType,
+        modeKicker,
+        badge,
+        sub,
+        special,
+        secondaryType
+      };
+    }
+
+    function renderDimList(result) {
+      const dimList = document.getElementById('dimList');
+      dimList.innerHTML = dimensionOrder.map(dim => {
+        const level = result.levels[dim];
+        const explanation = DIM_EXPLANATIONS[dim][level];
+        return `
+          <div class="dim-item">
+            <div class="dim-item-top">
+              <div class="dim-item-name">${dimensionMeta[dim].name}</div>
+              <div class="dim-item-score">${level} / ${result.rawScores[dim]}分</div>
+            </div>
+            <p>${explanation}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderResult() {
+      const result = computeResult();
+      const type = result.finalType;
+
+      document.getElementById('resultModeKicker').textContent = result.modeKicker;
+      document.getElementById('resultTypeName').textContent = `${type.code}（${type.cn}）`;
+      document.getElementById('matchBadge').textContent = result.badge;
+      document.getElementById('resultTypeSub').textContent = result.sub;
+      document.getElementById('resultDesc').textContent = type.desc;
+      document.getElementById('posterCaption').textContent = type.intro;
+      document.getElementById('funNote').textContent = result.special
+        ? '本测试仅供娱乐。隐藏人格和迷路人兜底都属于作者故意埋的损招，请勿把它当成医学、心理学、相学、命理学或灵异学依据。'
+        : '本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招魂、算命或人生判决书。你可以笑，但别太当真。';
+
+      const posterBox = document.getElementById('posterBox');
+      posterBox.classList.add('no-image');
+
+      renderDimList(result);
+      showScreen('result');
+    }
+
+    function startTest(preview = false) {
+      app.previewMode = preview;
+      app.answers = {};
+      // 找到"最后一题感想"并分离出来
+      const lastQuestion = questions.find(q => q.text.includes('最后一题'));
+      const otherQuestions = questions.filter(q => !q.text.includes('最后一题'));
+      // 打乱其他题目
+      const shuffledRegular = shuffle(otherQuestions);
+      // 组合：打乱的题目 + 盲选题 + 最后一题
+      if (specialQuestions.length > 0) {
+        app.shuffledQuestions = [
+          ...shuffledRegular,
+          specialQuestions[0],
+          lastQuestion
+        ];
+      } else {
+        app.shuffledQuestions = [...shuffledRegular, lastQuestion];
+      }
+      renderQuestions();
+      showScreen('test');
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => startTest(false));
+    document.getElementById('backIntroBtn').addEventListener('click', () => showScreen('intro'));
+    document.getElementById('submitBtn').addEventListener('click', renderResult);
+    document.getElementById('restartBtn').addEventListener('click', () => startTest(false));
+    document.getElementById('toTopBtn').addEventListener('click', () => showScreen('intro'));
+    document.getElementById('viewAllTypesBtn').addEventListener('click', renderAllTypes);
+    document.getElementById('backToResultBtn').addEventListener('click', () => showScreen('result'));
+
+    function renderAllTypes() {
+      const container = document.getElementById('allTypesList');
+
+      // 直接从 TYPE_LIBRARY 构建列表
+      const allTypes = Object.keys(TYPE_LIBRARY).map(code => ({
+        code,
+        ...TYPE_LIBRARY[code],
+        special: code === 'LOST' || code === 'RETD'
+      }));
+
+      container.innerHTML = allTypes.map(type => {
+        const desc = type.desc ? type.desc.substring(0, 100) + '...' : '';
+        return `
+          <div class="type-card ${type.special ? 'special' : ''}" data-code="${type.code}">
+            <div class="type-card-header">
+              <div class="type-card-code">${type.code}</div>
+              <div class="type-card-cn">${type.cn || ''}</div>
+            </div>
+            <div class="type-card-intro">${type.intro || ''}</div>
+            <div class="type-card-desc">${desc}</div>
+          </div>
+        `;
+      }).join('');
+
+      // 添加点击事件
+      container.querySelectorAll('.type-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const code = card.dataset.code;
+          const type = TYPE_LIBRARY[code];
+          if (type) {
+            alert(`${type.code} - ${type.cn}\n\n${type.intro}\n\n${type.desc}`);
+          }
+        });
+      });
+
+      showScreen('allTypes');
+    }
+  </script>
+
+</body>
+</html>
